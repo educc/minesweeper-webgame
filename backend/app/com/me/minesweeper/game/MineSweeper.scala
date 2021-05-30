@@ -20,14 +20,19 @@ class MineSweeper(props: MineSweeperProps) {
   // public attributes
 
   def gameBoard = this.board
-
   def gameState = this.state
+  def isGameFinished = this.state match {
+    case RUNNING => false
+    case GAME_OVER => true
+    case WINNER => true
+  }
 
   // public methods
 
   def move(row: Int, col: Int, moveType: MoveType): Array[Array[GameCell]] = {
     val pos = Pos(row - 1, col - 1)
-    require(pos.isValid())
+    require(pos.isValid(), "Invalid position")
+    require(!isGameFinished, "Game finished")
 
     val cellState = board(pos.row)(pos.col)
     moveType match {
