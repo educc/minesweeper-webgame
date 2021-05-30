@@ -1,16 +1,29 @@
 <template>
   <div id='rootGame'>
-    <p>{{ title }}</p>
-    <label>
-      Make flag:
-      <input type='checkbox' v-model='makeFlag'>
-    </label>
-    <div class='gameboard' v-if='rows > 0 && cols > 0'>
+    
+      <router-link to="/">Go home</router-link>
+    <div class='gameboard' v-if='rows > 0 && cols > 0' :style="gameboardStyles" >
+      <div class='gameboard-header'>
+        <label>
+          Make flag:
+          <input type='checkbox' v-model='makeFlag'>
+        </label>
+      </div>
+
       <div v-for="row in rows" :key="row" class='gameRow'>
         <div v-for="col in cols" :key="col" class='gameCell' v-on:click="makeMove(row, col)">
           <div class='inner'  v-bind:class="renderClass(row-1,col-1)">
             <span>{{ renderText(row-1,col-1) }}</span>
           </div>
+        </div>
+      </div>
+
+      <div class='gameboard-footer'> 
+        <div v-if="state === 'ON_PLAY'">
+          <button>Save Game</button>
+        </div>
+        <div v-else>
+          <button v-on:click='newGame()'>New Game</button>
         </div>
       </div>
     </div>
@@ -34,8 +47,15 @@ export default {
       rows: 0,
       cols: 0,
       makeFlag: false,
-      title: "Minesweeper",
       gameId: null
+    }
+  },
+  computed: {
+    gameboardStyles () {
+      return {
+        width: `${this.cols * 50}px`,
+        position: 'relative'
+      }
     }
   },
   methods: {
@@ -44,8 +64,8 @@ export default {
         () => Array.from(Array(nCols), () => Object.assign({}, defaultValue))
       );
     },
-    putFlag(){
-      console.log('flag here');
+    newGame(){
+      this.createGame(this.getAndRenderBoard);
     },
     makeMove(row, col){
       var moveStr = "MOVE";
@@ -107,13 +127,23 @@ export default {
     }
   },
   created() {
-    this.createGame(this.getAndRenderBoard);
+    this.newGame();
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.gameboard-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+}
+.gameboard-footer {
+  display: flex;
+  padding: 10px;
+  justify-content: center;
+}
 
 #rootGame {
   margin: 20px auto;
