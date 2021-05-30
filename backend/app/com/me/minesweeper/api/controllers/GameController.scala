@@ -1,32 +1,48 @@
 package com.me.minesweeper.api.controllers
 
+import com.me.minesweeper.api.dto.GameDtoReaders._
 import com.me.minesweeper.api.dto.GameDtoWriters._
 import com.me.minesweeper.api.dto._
-import play.api.libs.json.Json
+import com.me.minesweeper.api.services.GameService
+import com.me.minesweeper.game.MineSweeperProps
+import play.api.libs.json.{JsError, Json, Reads}
 import play.api.mvc._
 
-import java.util.UUID
 import javax.inject._
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class GameController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class GameController @Inject()(cc: ControllerComponents, gameService: GameService)(implicit exec: ExecutionContext) extends AbstractController(cc) {
 
+
+  def validateJson[A: Reads] = parse.json.validate(
+    _.validate[A].asEither.left.map(e => BadRequest(JsError.toJson(e)))
+  )
 
   def createGame = Action {
-    val gameId = UUID.randomUUID().toString
+    val gameId = gameService.create(new MineSweeperProps(8,8,10))
     val gameCreated = GameCreated(gameId)
     Ok(Json.toJson(gameCreated))
   }
 
   def getGameState(gameID: String) = Action {
-    val obj = GameInfo(10, 10, GameBoard(GameState.ON_PLAY, Seq(Cell(1,1,'E'))))
-    Ok(Json.toJson(obj))
+    gameService.find(gameID) match {
+      case Some(value) =>
+        val gameBoard = GameBoard.from(value)
+        Ok(Json.toJson(gameBoard))
+      case None => NotFound
+    }
   }
 
-  def makeMove(gameID: String) = Action {
-    val userMove = ""
-    val gameBoard = GameBoard(GameState.ON_PLAY, Seq.empty)
-    Ok(Json.toJson(gameBoard))
+  def makeMove(gameID: String) = Action(validateJson[GameMove]) { req =>
+    gameService.find(gameID) match {
+      case Some(game) =>
+        val move = req.body
+        game.move(move.row, move.col)
+        val gameBoard = GameBoard.from(game)
+        Ok(Json.toJson(gameBoard))
+      case None => NotFound
+    }
   }
 
 }
