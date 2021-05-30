@@ -19,8 +19,8 @@ class GameController @Inject()(cc: ControllerComponents, gameService: GameServic
     _.validate[A].asEither.left.map(e => BadRequest(JsError.toJson(e)))
   )
 
-  def createGame = Action {
-    val gameId = gameService.create(new MineSweeperProps(8,8,10))
+  def createGame = Action(validateJson[MineSweeperProps])  { req =>
+    val gameId = gameService.create(req.body)
     val gameCreated = GameCreated(gameId)
     Ok(Json.toJson(gameCreated))
   }

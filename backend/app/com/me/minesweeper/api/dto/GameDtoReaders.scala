@@ -1,8 +1,8 @@
 package com.me.minesweeper.api.dto
 
 import com.me.minesweeper.api.dto.GameMoveType.GameMoveType
-import com.me.minesweeper.api.dto.GameState.GameState
-import play.api.libs.json.{JsError, JsPath, JsResult, JsString, JsSuccess, JsValue, Json, JsonValidationError, Reads, Writes}
+import com.me.minesweeper.game.MineSweeperProps
+import play.api.libs.json._
 
 
 object GameDtoReaders {
@@ -16,4 +16,5 @@ object GameDtoReaders {
     }
   }
   implicit val gameMoveReader: Reads[GameMove] = Json.reads[GameMove]
+  implicit val minesweeperPropsReader: Reads[MineSweeperProps] = Json.reads[MineSweeperProps]
 }

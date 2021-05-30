@@ -12,6 +12,8 @@ class MineSweeper(props: MineSweeperProps) {
 
   // validations
   require(bombs < rows * cols, "Too many bombs")
+  require(rows > 0 && rows < 51, "rows must between 1 to 50")
+  require(cols > 0 && cols < 51, "cols must between 1 to 50")
 
   // internal classes
   case class Pos(row: Int, col: Int) {
