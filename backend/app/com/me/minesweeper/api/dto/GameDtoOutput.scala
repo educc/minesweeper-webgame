@@ -10,7 +10,7 @@ object GameInfo {
   def from(it: MineSweeper): GameInfo = GameInfo(it.cols, it.rows, GameBoard.from(it))
 }
 
-case class GameBoard(state: GameState, cells: Seq[Cell])
+case class GameBoard(state: GameState, timeElapsed: Long, cells: Seq[Cell])
 object GameBoard {
   def from(it: MineSweeper): GameBoard = {
     val state = it.gameState match {
@@ -24,7 +24,8 @@ object GameBoard {
       j <- 0 until it.gameBoard(i).length
     } yield Cell.from(i, j, it.gameBoard(i)(j))
 
-    GameBoard(state, cells)
+    val time = System.currentTimeMillis() / 1000 - it.startedTime
+    GameBoard(state, time, cells)
   }
 }
 

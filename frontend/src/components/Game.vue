@@ -15,6 +15,7 @@
       </div>
     </div>
     <p>State = {{ state }}</p>
+    <p>Time = {{ time }} seconds <i>(Refresh after each move)</i></p>
   </div>
 </template>
 
@@ -29,6 +30,7 @@ export default {
     return {
       board: [],
       state: "",
+      time: 0,
       rows: 0,
       cols: 0,
       makeFlag: false,
@@ -55,21 +57,22 @@ export default {
         moveType: moveStr
       }
       this.$http.post('/api/game/' + this.gameId + '/move', data).then(res => {
-        this.renderBoard(res.data.state, res.data.cells);
+        this.renderBoard(res.data);
       })
     },
     getAndRenderBoard(){
       this.$http.get("/api/game/" + this.gameId).then(res => {
         this.rows = res.data.rows;
         this.cols = res.data.cols;
-        this.renderBoard(res.data.lastState.state, res.data.lastState.cells);
+        this.renderBoard(res.data.lastState);
         console.log(res.data);
       });
     },
-    renderBoard(state, cells) {
-      this.state = state
+    renderBoard(stateObject) {
+      this.state = stateObject.state
+      this.time = stateObject.timeElapsed
       this.board = this.createMatrix(this.rows, this.cols, '');
-      cells.forEach(it => {
+      stateObject.cells.forEach(it => {
         this.board[it.row][it.col] = it.value;
       });
     },

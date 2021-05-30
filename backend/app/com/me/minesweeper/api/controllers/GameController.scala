@@ -20,7 +20,7 @@ class GameController @Inject()(cc: ControllerComponents, gameService: GameServic
   )
 
   def createGame = Action {
-    val gameId = gameService.create(new MineSweeperProps(8,8,2))
+    val gameId = gameService.create(new MineSweeperProps(8,8,10))
     val gameCreated = GameCreated(gameId)
     Ok(Json.toJson(gameCreated))
   }

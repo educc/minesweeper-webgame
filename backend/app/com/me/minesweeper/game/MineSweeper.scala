@@ -8,6 +8,7 @@ class MineSweeper(props: MineSweeperProps) {
   val bombs = props.bombs
   val rows = props.rows
   val cols = props.cols
+  val startedTime: Long = System.currentTimeMillis() / 1000;
 
   // validations
   require(bombs < rows * cols, "Too many bombs")
