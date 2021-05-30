@@ -1,7 +1,8 @@
-package controllers
+package com.me.minesweeper.api.controllers
+
+import play.api.mvc._
 
 import javax.inject._
-import play.api.mvc._
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -17,7 +18,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
    * a path of `/`.
    */
   def index = Action {
-    Ok(views.html.index("Your new application is ready."))
+    Ok("hi there")
   }
 
 }
