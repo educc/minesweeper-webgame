@@ -19,11 +19,8 @@
       </div>
 
       <div class='gameboard-footer'> 
-        <div v-if="state === 'ON_PLAY'">
-          <button>Save Game</button>
-        </div>
-        <div v-else>
-          <button v-on:click='newGame()'>New Game</button>
+        <div v-if="state !== 'ON_PLAY'">
+          <router-link to="/create-game">New Game</router-link>
         </div>
       </div>
     </div>
@@ -33,6 +30,8 @@
 </template>
 
 <script>
+
+import {removeGame} from '../services/GameService'
 
 export default {
   name: 'Game',
@@ -47,7 +46,7 @@ export default {
       rows: 0,
       cols: 0,
       makeFlag: false,
-      gameId: null
+      gameId: null,
     }
   },
   computed: {
@@ -63,9 +62,6 @@ export default {
       return Array.from(Array(nRows), 
         () => Array.from(Array(nCols), () => Object.assign({}, defaultValue))
       );
-    },
-    newGame(){
-      this.createGame(this.getAndRenderBoard);
     },
     makeMove(row, col){
       var moveStr = "MOVE";
@@ -95,6 +91,11 @@ export default {
       stateObject.cells.forEach(it => {
         this.board[it.row][it.col] = it.value;
       });
+
+      // remove saved game
+      if (this.state !== 'ON_PLAY') {
+        removeGame(this.gameId);
+      }
     },
     renderText(row, col){
       var cellState = this.board[row][col];
@@ -119,15 +120,17 @@ export default {
     renderClass(row, col) {
       return "gameCellState" + this.board[row][col];
     },
-    createGame(callback){
-      this.$http.post("/api/game").then(res => {
-        this.gameId = res.data.gameId;
-        callback();
+    loadGame(myGameId) {
+      this.$http.get("/api/game/" + myGameId).then(res => {
+        this.rows = res.data.rows;
+        this.cols = res.data.cols;
+        this.renderBoard(res.data.lastState);
       })
     }
   },
   created() {
-    this.newGame();
+    this.gameId = this.$route.params.id;
+    this.loadGame(this.gameId);
   }
 }
 </script>
