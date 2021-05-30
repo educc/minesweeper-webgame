@@ -3,7 +3,10 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /                           com.me.minesweeper.api.controllers.HomeController.index
+GET      /                               com.me.minesweeper.api.controllers.HomeController.index
+POST     /api/game                       com.me.minesweeper.api.controllers.GameController.createGame
+GET      /api/game/:gameId               com.me.minesweeper.api.controllers.GameController.getGameState(gameId)
+POST     /api/game/:gameId/move          com.me.minesweeper.api.controllers.GameController.makeMove(gameId)
 
 
 # Map static resources from the /public folder to the /assets URL path
