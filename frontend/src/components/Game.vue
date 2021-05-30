@@ -1,6 +1,10 @@
 <template>
   <div id='rootGame'>
-    {{ title }}
+    <p>{{ title }}</p>
+    <label>
+      Make flag:
+      <input type='checkbox' v-model='makeFlag'>
+    </label>
     <div class='gameboard' v-if='rows > 0 && cols > 0'>
       <div v-for="row in rows" :key="row" class='gameRow'>
         <div v-for="col in cols" :key="col" class='gameCell' v-on:click="makeMove(row, col)">
@@ -27,6 +31,7 @@ export default {
       state: "",
       rows: 0,
       cols: 0,
+      makeFlag: false,
       title: "Minesweeper",
       gameId: null
     }
@@ -41,8 +46,13 @@ export default {
       console.log('flag here');
     },
     makeMove(row, col){
+      var moveStr = "MOVE";
+      if (this.makeFlag) {
+        moveStr = "FLAG"
+      }
       var data = {
-        row, col
+        row, col,
+        moveType: moveStr
       }
       this.$http.post('/api/game/' + this.gameId + '/move', data).then(res => {
         this.renderBoard(res.data.state, res.data.cells);
@@ -70,6 +80,9 @@ export default {
 
       if (cellState === 'B') {
         text = "💣";
+      }
+      if (cellState === 'F') {
+        text = "🚩";
       }
       if (cellState === 'L') {
         text = "💣X";
@@ -123,7 +136,7 @@ export default {
   align-items: center;
 }
 
-.gameCellStateA {
+.gameCellStateA, .gameCellStateF {
   background: rgb(200,200, 200);
 }
 .gameCellStateB, .gameCellStateB, .gameCellState1, .gameCellState2, .gameCellState3, .gameCellState4, .gameCellState5, .gameCellState6, .gameCellState7, .gameCellState8, .gameCellState9 {
