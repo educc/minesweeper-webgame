@@ -29,7 +29,8 @@ class GameController @Inject()(cc: ControllerComponents, gameService: GameServic
     gameService.find(gameID) match {
       case Some(value) =>
         val gameBoard = GameBoard.from(value)
-        Ok(Json.toJson(gameBoard))
+        val gameInfo = GameInfo(value.cols, value.rows, gameBoard)
+        Ok(Json.toJson(gameInfo))
       case None => NotFound
     }
   }
