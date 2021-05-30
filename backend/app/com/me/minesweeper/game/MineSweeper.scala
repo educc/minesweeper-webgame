@@ -2,7 +2,11 @@ package com.me.minesweeper.game
 
 import com.me.minesweeper.game.MineSweeperUtils.{ADJACENTS, random}
 
-class MineSweeper(val cols: Int,val rows: Int,val bombs: Int) {
+class MineSweeper(props: MineSweeperProps) {
+
+  val bombs = props.bombs
+  val rows = props.rows
+  val cols = props.cols
 
   // validations
   require(bombs < rows*cols, "Too many bombs")

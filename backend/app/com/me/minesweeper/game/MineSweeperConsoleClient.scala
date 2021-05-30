@@ -16,7 +16,7 @@ object MineSweeperConsoleClient {
 
   def main(args: Array[String]): Unit = {
 
-    val mineSweeper = new MineSweeper(5, 5, 24)
+    val mineSweeper = new MineSweeper(MineSweeperProps(5, 5, 4))
 
     while(mineSweeper.gameState == RUNNING) {
       printBoard(mineSweeper)

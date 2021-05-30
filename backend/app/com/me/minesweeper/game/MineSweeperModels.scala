@@ -1,5 +1,6 @@
 package com.me.minesweeper.game
 
+case class MineSweeperProps(rows: Int, cols: Int, bombs: Int)
 
 sealed trait GameState
 case object RUNNING extends GameState
