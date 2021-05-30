@@ -4,7 +4,7 @@ import com.me.minesweeper.api.dto.GameDtoReaders._
 import com.me.minesweeper.api.dto.GameDtoWriters._
 import com.me.minesweeper.api.dto._
 import com.me.minesweeper.api.services.GameService
-import com.me.minesweeper.game.MineSweeperProps
+import com.me.minesweeper.game.{MineSweeperProps, MoveType}
 import play.api.libs.json.{JsError, Json, Reads}
 import play.api.mvc._
 
@@ -20,7 +20,7 @@ class GameController @Inject()(cc: ControllerComponents, gameService: GameServic
   )
 
   def createGame = Action {
-    val gameId = gameService.create(new MineSweeperProps(8,8,10))
+    val gameId = gameService.create(new MineSweeperProps(8,8,2))
     val gameCreated = GameCreated(gameId)
     Ok(Json.toJson(gameCreated))
   }
@@ -39,7 +39,12 @@ class GameController @Inject()(cc: ControllerComponents, gameService: GameServic
     gameService.find(gameID) match {
       case Some(game) =>
         val move = req.body
-        game.move(move.row, move.col)
+        val moveType = move.moveType match {
+          case com.me.minesweeper.api.dto.GameMoveType.MOVE => MoveType.MOVE
+          case com.me.minesweeper.api.dto.GameMoveType.FLAG =>MoveType.FLAG
+        }
+
+        game.move(move.row, move.col, moveType)
         val gameBoard = GameBoard.from(game)
         Ok(Json.toJson(gameBoard))
       case None => NotFound

@@ -1,6 +1,7 @@
 package com.me.minesweeper.game
 
 import com.me.minesweeper.game.MineSweeperUtils.{ADJACENTS, random}
+import com.me.minesweeper.game.MoveType.MoveType
 
 class MineSweeper(props: MineSweeperProps) {
 
@@ -9,7 +10,7 @@ class MineSweeper(props: MineSweeperProps) {
   val cols = props.cols
 
   // validations
-  require(bombs < rows*cols, "Too many bombs")
+  require(bombs < rows * cols, "Too many bombs")
 
   // internal classes
   case class Pos(row: Int, col: Int) {
@@ -19,23 +20,26 @@ class MineSweeper(props: MineSweeperProps) {
   // public attributes
 
   def gameBoard = this.board
+
   def gameState = this.state
 
   // public methods
 
-  def move(row: Int, col: Int): Array[Array[GameCell]] = {
+  def move(row: Int, col: Int, moveType: MoveType): Array[Array[GameCell]] = {
     val pos = Pos(row - 1, col - 1)
     require(pos.isValid())
 
-    if (bombPositions.contains(pos)) {
-      state = GAME_OVER
-      revealBombs()
-      board(pos.row)(pos.col) = LOSE
-    } else {
-      exploreBoard(pos)
-      if (movesLeft == 0) {
-        state = WINNER
-      }
+    val cellState = board(pos.row)(pos.col)
+    moveType match {
+      case MoveType.MOVE =>
+        if (cellState == AVAILABLE)
+          makeMove(pos)
+      case MoveType.FLAG =>
+        board(pos.row)(pos.col) = cellState match {
+          case AVAILABLE => FLAG
+          case FLAG => AVAILABLE
+          case _ => cellState
+        }
     }
     board
   }
@@ -57,15 +61,28 @@ class MineSweeper(props: MineSweeperProps) {
 
   // internal methods
 
-  private def exploreBoard(pos: Pos): Unit = if (board(pos.row)(pos.col) == AVAILABLE) {
-        val bombsCount = count(pos)
-        board(pos.row)(pos.col) = Played(bombsCount)
-        movesLeft = movesLeft-1
-        if (bombsCount == 0) {
-          adjacent(pos)
-            .foreach(exploreBoard)
-        }
+  private def makeMove(pos: Pos): Unit = {
+    if (bombPositions.contains(pos)) {
+      state = GAME_OVER
+      revealBombs()
+      board(pos.row)(pos.col) = LOSE
+    } else {
+      exploreBoard(pos)
+      if (movesLeft == 0) {
+        state = WINNER
+      }
     }
+  }
+
+  private def exploreBoard(pos: Pos): Unit = if (board(pos.row)(pos.col) == AVAILABLE) {
+    val bombsCount = count(pos)
+    board(pos.row)(pos.col) = Played(bombsCount)
+    movesLeft = movesLeft - 1
+    if (bombsCount == 0) {
+      adjacent(pos)
+        .foreach(exploreBoard)
+    }
+  }
 
   private def count(pos: Pos): Int = adjacent(pos)
     .map(it => if (bombPositions.contains(it)) 1 else 0)

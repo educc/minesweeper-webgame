@@ -26,8 +26,13 @@ object MineSweeperConsoleClient {
 
       print("col = ")
       val col = scala.io.StdIn.readInt()
+      print("type (Move = M, Flag = F) = ")
+      val moveType = scala.io.StdIn.readChar() match {
+        case 'F' => MoveType.FLAG
+        case _ => MoveType.MOVE
+      }
 
-      mineSweeper.move(row, col)
+      mineSweeper.move(row, col, moveType)
     }
     println(s"game = ${mineSweeper.gameState}")
     println(printBoard(mineSweeper))

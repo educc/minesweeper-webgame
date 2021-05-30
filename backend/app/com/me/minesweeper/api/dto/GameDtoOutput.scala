@@ -1,7 +1,7 @@
 package com.me.minesweeper.api.dto
 
-import com.me.minesweeper.api.dto.GameState.{GameState, ON_PLAY}
-import com.me.minesweeper.game.{AVAILABLE, BOMB, GAME_OVER, GameCell, LOSE, MineSweeper, Played, RUNNING, WINNER}
+import com.me.minesweeper.api.dto.GameState.GameState
+import com.me.minesweeper.game.{AVAILABLE, BOMB, FLAG, GAME_OVER, GameCell, LOSE, MineSweeper, Played, RUNNING, WINNER}
 
 
 case class GameCreated(gameId: String)
@@ -35,6 +35,7 @@ object Cell {
       case AVAILABLE => 'A'
       case BOMB => 'B'
       case LOSE => 'L'
+      case FLAG => 'F'
       case Played(number) => number.toString.charAt(0)
     }
     Cell(row, col, myChar)
