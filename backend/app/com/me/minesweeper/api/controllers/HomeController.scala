@@ -1,5 +1,6 @@
 package com.me.minesweeper.api.controllers
 
+import controllers.Assets
 import play.api.mvc._
 
 import javax.inject._
@@ -18,7 +19,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
    * a path of `/`.
    */
   def index = Action {
-    Ok("hi there")
+    Redirect("/assets/index.html")
   }
 
 }
