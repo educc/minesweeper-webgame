@@ -5,7 +5,7 @@
     <div class='gameboard' v-if='rows > 0 && cols > 0' :style="gameboardStyles" >
       <div class='gameboard-header'>
         <label>
-          Make flag:
+          Make or remove flag:
           <input type='checkbox' v-model='makeFlag'>
         </label>
       </div>
@@ -64,14 +64,8 @@ export default {
       );
     },
     makeMove(row, col){
-      var moveStr = "MOVE";
-      if (this.makeFlag) {
-        moveStr = "FLAG"
-      }
-      var data = {
-        row, col,
-        moveType: moveStr
-      }
+      var moveType = this.makeFlag? "FLAG": "MOVE";
+      var data = { row, col, moveType }
       this.$http.post('/api/game/' + this.gameId + '/move', data).then(res => {
         this.renderBoard(res.data);
       })
@@ -125,6 +119,10 @@ export default {
         this.rows = res.data.rows;
         this.cols = res.data.cols;
         this.renderBoard(res.data.lastState);
+      }).catch(err => {
+        alert(err);
+        removeGame(myGameId);
+        this.$router.push('/');
       })
     }
   },

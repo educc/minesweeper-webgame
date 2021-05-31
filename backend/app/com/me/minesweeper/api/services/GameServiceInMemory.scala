@@ -19,4 +19,13 @@ class GameServiceInMemory extends GameService {
 
     uniqueId
   }
+
+  override def remove(gameId: String): Boolean = {
+    var item = gameMap.get(gameId)
+    if (item.isEmpty) { false }
+    else {
+     gameMap = gameMap - gameId
+     true
+    }
+  }
 }

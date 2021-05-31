@@ -13,7 +13,7 @@ Vue.prototype.$http = axios;
 
 
 const routes = [
-    { path: '/', component: Home },
+    { path: '/', name: 'home', component: Home },
     { path: '/create-game', component: CreateGame },
     { path: '/game/:id', name: 'game', component: Game },
     { path: '/saved-games', component: SavedGamesList } 
