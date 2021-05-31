@@ -13,6 +13,6 @@ object MineSweeperUtils {
     (1, -1), (1, 0), (1, 1))
 
   def createBoard(rows: Int, cols: Int): Array[Array[GameCell]] = (0 until rows)
-    .map(it => Array.fill[GameCell](cols)(AVAILABLE))
+    .map(_ => Array.fill[GameCell](cols)(AVAILABLE))
     .toArray
 }

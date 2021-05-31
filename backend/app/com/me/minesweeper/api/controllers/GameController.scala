@@ -4,7 +4,6 @@ import com.me.minesweeper.api.dto.GameDtoReaders._
 import com.me.minesweeper.api.dto.GameDtoWriters._
 import com.me.minesweeper.api.dto._
 import com.me.minesweeper.api.services.GameService
-import com.me.minesweeper.game.MoveType.MoveType
 import com.me.minesweeper.game.{MineSweeper, MineSweeperProps, MoveType}
 import play.api.Logger
 import play.api.libs.json.{JsError, Json, Reads}
